@@ -1,0 +1,25 @@
+{
+  "_commit": "9e3c49f6680d4c400567c39d70b768f0a322c95e",
+  "_copy_without_render": [
+    "*.rst_t"
+  ],
+  "_jinja2_env_vars": {
+    "lstrip_blocks": true,
+    "trim_blocks": true
+  },
+  "_template": "https://github.com/statisticsnorway/ssb-pypitemplate.git",
+  "author": "Team Statistikktjenester",
+  "code_quality_level": "Medium",
+  "copyright_owner": "Statistics Norway",
+  "copyright_year": "2025",
+  "department_number": "724",
+  "dependency_manager_tool": "uv",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "contact-email@ssb.no",
+  "friendly_name": "Whodat",
+  "github_organization": "statisticsnorway",
+  "license": "MIT",
+  "package_name": "whodat",
+  "project_name": "whodat",
+  "version": "0.0.0"
+}
