@@ -1,0 +1,19 @@
+[
+    {
+        "navn": "KLASSISK VITS",
+        "foedselsdato": "18950523",
+        "kjoenn": "kvinne"
+    },
+    {
+        "navn": "BARMHJERTIG TRAKTOREGG",
+        "foedselsdato": "20070929",
+        "bostedsadresse": "Lundlia 12 H0101 7089 HEIMDAL",
+        "kjoenn": "mann"
+    },
+    {
+        "navn": "LEGITIM PISTOL",
+        "foedselsdato": "19640402",
+        "bostedsadresse": "Smøyatunvegen 10 H0101 5283 FOTLANDSVÅG",
+        "kjoenn": "mann"
+    }
+]
