@@ -1,16 +1,12 @@
 
 from enum import Enum
+from time import strptime
 from typing import Any
 
-import valuetime
 from pydantic import BaseModel
 from pydantic import field_validator
-from pydantic import model_validator
+from pydantic import model_serializer
 
-
-class Gender(str, Enum):
-    MALE = "mann"
-    FEMALE = "kvinne"
 
 class Gender(str, Enum):
     MALE = "mann"
@@ -21,9 +17,15 @@ class DataBasis(str, Enum):
     HISTORICAL = "historisk"
 
 class WhodatRequest(BaseModel):
-    personal_id: str
     variables: "WhodatVariables"
     modifiers: "WhodatModifiers"
+    
+    @model_serializer
+    def _serialize(self) -> dict[str, Any]:
+        return self.variables.model_dump(exclude_none=True) | self.modifiers.model_dump(exclude_none=True)
+
+class WhodatResponse(BaseModel):
+    found_personal_ids: list[str]
 
 class WhodatVariables(BaseModel):
     """All variables available in FREG API.
@@ -38,7 +40,7 @@ class WhodatVariables(BaseModel):
     kjoenn: Gender | None = None
     
     # Fødselsdato (YYYYMMDD)
-    foedseldato: str | None = None
+    foedselsdato: str | None = None
     
     # Laveste fødselsår (4 siffer)
     foedselsaarFraOgMed: str | None = None
@@ -61,13 +63,7 @@ class WhodatVariables(BaseModel):
     # Filtrerer treff på fylkesnummer (2 siffer)
     fylkesnummer: str | None = None
     
-    @model_validator(mode="before")
-    @classmethod
-    def validate(cls, values: list[str]) -> dict[str, Any]:
-        id, color = values
-        return {"id": id, "color": color}
-    
-    @field_validator("foedselsdato", "foedselsaarFraOgMed", "foedselsaarTilOgMed", mode="before")
+    @field_validator("foedselsdato", mode="before")
     @classmethod
     def _ensure_yyyymmdd_format(cls, value: str | None) -> str | None:
         if value is None:
@@ -77,7 +73,7 @@ class WhodatVariables(BaseModel):
             raise ValueError("value must be a string in the following format (YYYYMMDD)")
         
         try:
-            valuetime.strptime(value, '%Y%m%d')
+            strptime(value, '%Y%m%d')
         except ValueError as e:
             raise ValueError(
                 "value must be a string in the following format (YYYYMMDD)"
@@ -96,7 +92,7 @@ class WhodatVariables(BaseModel):
         if not isinstance(value, str):
             raise ValueError("value must be a string in ISO 8601 format (YYYY-MM-DD)")
         try:
-            valuetime.strptime(value, "%Y")
+            strptime(value, "%Y")
         except ValueError as e:
             raise ValueError(
                 "value must be a string in ISO 8601 format (YYYY-MM-DD)"

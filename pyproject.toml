@@ -18,10 +18,16 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
+    "aiohttp>=3.12.15",
+    "aiohttp-retry>=2.9.1",
     "click>=8.0.1",
+    "dapla-auth-client>=1.1.0",
     "pandas>=2.3.2",
     "polars>=1.32.3",
     "pydantic>=2.11.7",
+    "pytest>=8.4.1",
+    "pytest-cases>=3.9.1",
+    "python-ulid>=3.1.0",
     "requests>=2.32.5",
 ]
 
@@ -81,6 +87,7 @@ warn_unreachable = true
 pretty = true
 show_column_numbers = true
 show_error_context = true
+plugins = ["pydantic.mypy"]
 
 [tool.ruff]
 force-exclude = true  # Apply excludes to pre-commit

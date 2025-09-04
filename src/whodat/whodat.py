@@ -1,34 +1,38 @@
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 import pandas as pd
 import polars as pl
 
+from whodat.client.client import _client
 from whodat.model import WhodatModifiers
 from whodat.model import WhodatRequest
 from whodat.model import WhodatVariables
+from whodat.result import Result
+from whodat.utils import running_asyncio_loop
 
 
 class Whodat:
     @staticmethod
     def from_pandas(dataframe: pd.DataFrame) -> "Whodat._MethodSelector":
-        return Whodat._MethodSelector().search_fnr(pl.from_pandas(dataframe))
+        return Whodat._MethodSelector(pl.from_pandas(dataframe))
 
     @staticmethod
     def from_polars(dataframe: pl.DataFrame) -> "Whodat._MethodSelector":
-        return Whodat._MethodSelector().search_fnr(dataframe)
+        return Whodat._MethodSelector(dataframe)
 
     class _MethodSelector:
-        def __init__(self) -> None:
-            pass
-
-        def search_fnr(dataframe: pl.DataFrame, personal_id_col_name: str) -> None:
-            pass
+        def __init__(self, dataframe: pl.DataFrame) -> None:
+            self.dataframe: pl.DataFrame = dataframe
+        
+        def search_fnr(self) -> "Whodat._VariableSelector":
+            return Whodat._VariableSelector(self.dataframe)
 
     class _VariableSelector:
         def __init__(
-            self, personal_id_col_name: str, dataframe: pl.DataFrame,
+            self, dataframe: pl.DataFrame,
         ) -> None:
-            self.personal_id_col_name: str = personal_id_col_name
             self.dataframe: pl.DataFrame = dataframe
             self.all_variables: list[list[str]] = []
             self.all_modifiers: list[WhodatModifiers] = []
@@ -43,25 +47,52 @@ class Whodat:
         ) -> "Whodat._VariableSelector":
             self.all_variables.append(variables)
             self.all_modifiers.append(WhodatModifiers(
-                inkluder_oppholdsadresse=inkluder_oppholdsadresse,
-                soek_fonetisk=soek_fonetisk,
-                inkluder_doede=inkluder_doede,
+                inkluderOppholdsadresse=inkluder_oppholdsadresse,
+                soekFonetisk=soek_fonetisk,
+                inkluderDoede=inkluder_doede,
                 opplysningsgrunnlag=opplysningsgrunnlag))
             
             return self
 
-        def run(self) -> None:
+        def run(self) -> Result:
             def index_column_to_dict(variables: list[str], row: dict[str, Any]) -> dict[str, Any]:
                 if not all(var in row for var in variables):
                     raise ValueError(f"Not all variables {variables} are were found in the dataframe columns {row.keys()}")
                 
-                return {var: self.dataframe.select(var) for var in variables}
+                return {var: row[var] for var in variables}
             
+            requests: list[list[WhodatRequest]] = []
             for row in self.dataframe.iter_rows(named=True):
-                for variables, modifiers in zip(self.all_variables, self.all_modifiers, strict=True):
-                    request = WhodatRequest(
-                        data=row[self.personal_id_col_name],
-                        variables=WhodatVariables(index_column_to_dict(variables, row)),
-                        modifiers=modifiers
+                requests_for_row: list[WhodatRequest] = [
+                    WhodatRequest(
+                        variables=WhodatVariables(**index_column_to_dict(variables, row)),
+                        modifiers=modifiers,
                     )
-                    print(request.json(indent=2, exclude_none=True))
+                for variables, modifiers in zip(self.all_variables, self.all_modifiers, strict=True)]
+                
+                requests.append(requests_for_row)
+            
+            whodat_client = _client()
+            if running_asyncio_loop() is not None:
+                with ThreadPoolExecutor(
+                    1
+                ) as pool:  # Run new event loop in a second worker thread if an event loop is already running
+                    responses = pool.submit(
+                        lambda: asyncio.run(
+                            whodat_client.post_to_field_endpoint(
+                                path="search",
+                                timeout=120,
+                                whodat_requests=requests,
+                            )
+                        )
+                    ).result()
+            else:
+                responses = asyncio.run(
+                    whodat_client.post_to_field_endpoint(
+                        path="search",
+                        timeout=120,
+                        whodat_requests=requests,
+                    )
+                )
+            
+            return Result(responses)
