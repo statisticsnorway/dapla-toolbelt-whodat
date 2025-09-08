@@ -14,6 +14,8 @@ from whodat.utils import running_asyncio_loop
 
 
 class Whodat:
+    """Main class for performing Whodat personal ID searches."""
+
     @staticmethod
     def from_pandas(dataframe: pd.DataFrame) -> "Whodat._MethodSelector":
         """Initiate a Whodat search from a Pandas DataFrame.

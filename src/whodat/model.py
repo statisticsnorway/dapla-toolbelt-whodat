@@ -9,20 +9,28 @@ from pydantic import model_serializer
 
 
 class WhodatBaseModel(BaseModel):
+    """Base model for Whodat."""
+
     model_config = ConfigDict(extra="forbid")
 
 
 class Gender(str, Enum):
+    """Enum representing gender options."""
+
     MALE = "mann"
     FEMALE = "kvinne"
 
 
 class DataBasis(str, Enum):
+    """Enum representing data basis options."""
+
     CURRENT = "gjeldende"
     HISTORICAL = "historisk"
 
 
-class WhodatRequest(BaseModel):
+class WhodatRequest(WhodatBaseModel):
+    """Request model for Whodat Service."""
+
     variables: "WhodatVariables"
     modifiers: "WhodatModifiers"
 
@@ -34,6 +42,8 @@ class WhodatRequest(BaseModel):
 
 
 class WhodatResponse(BaseModel):
+    """Response model from Whodat Service."""
+
     found_personal_ids: list[str]
 
 

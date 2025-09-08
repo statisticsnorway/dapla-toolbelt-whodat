@@ -32,7 +32,7 @@ class Result:
         self.responses = responses
         self._details: list[dict[str, Any]] = self._generate_details()
 
-    def to_list(self, exclude_nones: bool = False) -> list[str | None]:
+    def to_list(self, exclude_nones: bool | None = False) -> list[str | None]:
         """Convert the result to a list of personal IDs. By default, returns None if a unique ID was not found.
 
         Args:
