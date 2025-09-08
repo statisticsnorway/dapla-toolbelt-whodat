@@ -1,5 +1,6 @@
 from typing import Any
 
+from polars import exclude
 from pydantic import BaseModel
 
 from whodat.model import WhodatResponse
@@ -23,14 +24,14 @@ class Result:
         self.responses = responses
         self._details: list[dict[str, Any]] = self.generate_details()
     
-    def to_list(self) -> list[str | None]:
+    def to_list(self, exclude_nones: bool = False) -> list[str | None]:
         result: list[str | None] = []
         for response in self.responses:
             found_ids = response[0].found_personal_ids
             
             if len(found_ids) == 1:
                 result.append(found_ids[0])
-            else:
+            elif exclude_nones is False:
                 result.append(None)
         
         return result

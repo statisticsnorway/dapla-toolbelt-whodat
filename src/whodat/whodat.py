@@ -11,7 +11,7 @@ from whodat.model import WhodatRequest
 from whodat.model import WhodatVariables
 from whodat.result import Result
 from whodat.utils import running_asyncio_loop
-
+from pydantic import ValidationError
 
 class Whodat:
     @staticmethod
@@ -60,18 +60,17 @@ class Whodat:
                     raise ValueError(f"Not all variables {variables} are were found in the dataframe columns {row.keys()}")
                 
                 return {var: row[var] for var in variables}
-            
             requests: list[list[WhodatRequest]] = []
             for row in self.dataframe.iter_rows(named=True):
                 requests_for_row: list[WhodatRequest] = [
                     WhodatRequest(
-                        variables=WhodatVariables(**index_column_to_dict(variables, row)),
+                        variables=WhodatVariables.model_validate(index_column_to_dict(variables, row)),
                         modifiers=modifiers,
                     )
                 for variables, modifiers in zip(self.all_variables, self.all_modifiers, strict=True)]
                 
                 requests.append(requests_for_row)
-            
+
             whodat_client = _client()
             if running_asyncio_loop() is not None:
                 with ThreadPoolExecutor(

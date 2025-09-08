@@ -1,12 +1,18 @@
 
+import contextlib
 from enum import Enum
 from time import strptime
-from typing import Any
+from typing import Any, Generator
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pydantic import field_validator
 from pydantic import model_serializer
+from pydantic import BaseModel, HttpUrl, ValidationError
+from pydantic_core import ErrorDetails
+import os
 
+class WhodatBaseModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
 class Gender(str, Enum):
     MALE = "mann"
@@ -27,12 +33,16 @@ class WhodatRequest(BaseModel):
 class WhodatResponse(BaseModel):
     found_personal_ids: list[str]
 
-class WhodatVariables(BaseModel):
+class WhodatVariables(WhodatBaseModel):
     """All variables available in FREG API.
 
     Variable documentation is from: 
     https://app.swaggerhub.com/apis/skatteetaten/Folkeregisteret_Offentlig_med_hjemmel/1.6.2#/Offentlig%20med%20hjemmel/personsoek
     """
+    model_config = ConfigDict(hide_input_in_errors= True)
+
+    ### VARIABLES ###
+    
     # Et eller flere hele ord fra personnavnet, skilt med mellomrom.
     navn: str | None = None
     
@@ -115,6 +125,18 @@ class WhodatVariables(BaseModel):
             return value
 
         raise ValueError("value must be a string with exactly 4 digits")
+    
+    @field_validator("kjoenn", mode="before")
+    @classmethod
+    def _ensure_correct_gender(cls, value: str | None) -> Gender | None:
+        if value is None:
+            return None
+        
+        try:
+            gender = Gender(value)
+        except ValueError as e:
+            raise ValueError(f"Gender was \"{value}\", but it must be either 'mann' or 'kvinne'") from e
+        return gender
 
 class WhodatModifiers(BaseModel):
     """All search modifiers available in FREG API.
