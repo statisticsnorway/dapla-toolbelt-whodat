@@ -1,5 +1,3 @@
-
-
 """@pytest.mark.usefixtures("setup")
 @integration_test()
 def test_whodat() -> None:
