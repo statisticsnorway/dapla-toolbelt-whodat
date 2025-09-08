@@ -1,6 +1,6 @@
 [project]
 name = "whodat"
-version = "0.0.0"
+version = "0.0.1"
 description = "Whodat"
 authors = [{ name = "Team Statistikktjenester", email = "contact-email@ssb.no" }]
 maintainers = [{ name = "Statistics Norway, Data enablement Department (724)" }]
