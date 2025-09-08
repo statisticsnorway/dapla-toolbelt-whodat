@@ -28,6 +28,12 @@ class WhodatClient:
         whodat_service_url: str | None = None,
         auth_token: str | None = None,
     ) -> None:
+        """Constructor for WhodatClient.
+
+        Args:
+            whodat_service_url (str | None, optional): Base URL for Whodat Service
+            auth_token (str | None, optional): Static auth token
+        """
         self.whodat_service_url = whodat_service_url
         self.static_auth_token = auth_token
 
@@ -58,10 +64,10 @@ class WhodatClient:
         Args:
             path (str): Full URL to the endpoint
             timeout (int): Request timeout
-            pseudo_requests: Pseudo requests
+            whodat_requests: list[list[WhodatRequest]] Whodat requests, with each inner list representing the requests for a single row.
 
         Returns:
-            list[tuple[str, list[str], RawPseudoMetadata]]: A list of tuple of (field_name, data, metadata)
+            list[tuple[WhodatResponse, int]]: A list of tuple of (field_name, data, metadata)
         """
 
         async def _post(
@@ -85,14 +91,20 @@ class WhodatClient:
                     await WhodatClient._handle_response_error(response)
                     response_json = await response.json()
                     found_personal_ids = response_json.get("foedselsEllerDNummer", [])
-                    if len(found_personal_ids) == 1: # Early return if unique ID found
-                        return WhodatResponse.model_validate(
-                            {"found_personal_ids": found_personal_ids}
-                        ), num_request
-                    
-            return WhodatResponse.model_validate( # Late return if all attempts exhausted
-                {"found_personal_ids": found_personal_ids}
-            ), num_request
+                    if len(found_personal_ids) == 1:  # Early return if unique ID found
+                        return (
+                            WhodatResponse.model_validate(
+                                {"found_personal_ids": found_personal_ids}
+                            ),
+                            num_request,
+                        )
+
+            return (
+                WhodatResponse.model_validate(  # Late return if all attempts exhausted
+                    {"found_personal_ids": found_personal_ids}
+                ),
+                num_request,
+            )
 
         aio_session = ClientSession(
             connector=TCPConnector(limit=200, force_close=True),
@@ -129,7 +141,6 @@ class WhodatClient:
 
         return results
 
-
     @staticmethod
     async def _handle_response_error(response: ClientResponse) -> None:
         """Report error messages in response object."""
@@ -140,7 +151,7 @@ class WhodatClient:
                 print(response.headers)
                 print(await response.text())
                 response.raise_for_status()
-    
+
     @staticmethod
     def _generate_new_correlation_id() -> str:
         return str(ULID())
