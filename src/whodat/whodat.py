@@ -125,7 +125,7 @@ class Whodat:
                         whodat_requests=requests,
                     )
                 )
-            
+
             indices_original_df = (
                 self.dataframe.get_column("index").to_list()
                 if "index" in self.dataframe.columns
