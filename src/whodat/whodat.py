@@ -26,7 +26,7 @@ class Whodat:
         Returns:
             Whodat._MethodSelector: Intermediate class for choosing search method.
         """
-        return Whodat._MethodSelector(pl.from_pandas(dataframe))
+        return Whodat._MethodSelector(pl.from_pandas(dataframe, include_index=True))
 
     @staticmethod
     def from_polars(dataframe: pl.DataFrame) -> "Whodat._MethodSelector":
