@@ -126,10 +126,11 @@ class Whodat:
                     )
                 )
 
-            indices_original_df = (
-                self.dataframe.get_column("index").to_list()
-                if "index" in self.dataframe.columns
-                else None
-            )
-
+            if "index" in self.dataframe.columns:  # If source was Polars DataFrame
+                indices_original_df = self.dataframe.get_column("index").to_list()
+            elif "None" in self.dataframe.columns:  # If source was Pandas DataFrame
+                indices_original_df = self.dataframe.get_column("None").to_list()
+            else:
+                indices_original_df = None
+                
             return Result(responses, indices_original_df)
