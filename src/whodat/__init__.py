@@ -1,5 +1,5 @@
 """Whodat."""
 
-from whodat.whodat import Whodat
+from .whodat import Whodat
 
 __all__ = ["Whodat"]
