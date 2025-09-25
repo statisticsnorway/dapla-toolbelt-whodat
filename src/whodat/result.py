@@ -33,6 +33,7 @@ class Result:
 
         Args:
             responses (list[tuple[WhodatResponse, int]]): List of (responses, index) from Whodat service.
+            indices: list[int] | None = None: Original indices from dataframe, if available.
         """
         self.indices_original_df = indices
         self.responses = responses
@@ -57,10 +58,10 @@ class Result:
                 result.append(None)
 
         return result
-    
+
     def to_dict_from_original_indices(self) -> dict[int, str]:
         """Convert the result to a dictionary mapping original dataframe indices to personal IDs.
-        
+
         Only includes entries with a unique personal ID.
 
         Args:
@@ -70,7 +71,9 @@ class Result:
             dict[int, str]: A dictionary mapping original dataframe indices to personal IDs.
         """
         if self.indices_original_df is None:
-            raise ValueError("Original indices are not available in DataFrame. If using Polars, include a column named 'index' representing the original indices.")
+            raise ValueError(
+                "Original indices are not available in DataFrame. If using Polars, include a column named 'index' representing the original indices."
+            )
         return {
             self.indices_original_df[i]: res[0].found_personal_ids[0]
             for i, res in enumerate(self.responses)
