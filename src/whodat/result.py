@@ -77,7 +77,7 @@ class Result:
         return {
             self.indices_original_df[i]: res[0].found_personal_ids[0]
             for i, res in enumerate(self.responses)
-            if len(res[0].found_personal_ids[0]) == 1
+            if len(res[0].found_personal_ids) == 1
         }
 
     def _generate_details(self) -> list[dict[str, Any]]:
