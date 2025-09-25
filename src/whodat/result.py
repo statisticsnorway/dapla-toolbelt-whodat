@@ -57,6 +57,25 @@ class Result:
                 result.append(None)
 
         return result
+    
+    def to_dict_from_original_indices(self) -> dict[int, str]:
+        """Convert the result to a dictionary mapping original dataframe indices to personal IDs.
+        
+        Only includes entries with a unique personal ID.
+
+        Args:
+            exclude_nones (bool, optional): Exclude entries without a unique personal ID. Defaults to False.
+
+        Returns:
+            dict[int, str]: A dictionary mapping original dataframe indices to personal IDs.
+        """
+        if self.indices_original_df is None:
+            raise ValueError("Original indices are not available in DataFrame. If using Polars, include a column named 'index' representing the original indices.")
+        return {
+            self.indices_original_df[i]: res[0].found_personal_ids[0]
+            for i, res in enumerate(self.responses)
+            if len(res[0].found_personal_ids[0]) == 1
+        }
 
     def _generate_details(self) -> list[dict[str, Any]]:
         details = []
