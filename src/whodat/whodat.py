@@ -132,5 +132,5 @@ class Whodat:
                 indices_original_df = self.dataframe.get_column("None").to_list()
             else:
                 indices_original_df = None
-                
+
             return Result(responses, indices_original_df)
