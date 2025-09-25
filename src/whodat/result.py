@@ -64,8 +64,8 @@ class Result:
 
         Only includes entries with a unique personal ID.
 
-        Args:
-            exclude_nones (bool, optional): Exclude entries without a unique personal ID. Defaults to False.
+        Raises:
+            ValueError: If original indices are not available in the DataFrame.
 
         Returns:
             dict[int, str]: A dictionary mapping original dataframe indices to personal IDs.
