@@ -6,9 +6,11 @@ import typing as t
 
 import google.auth.transport.requests
 import google.oauth2.id_token
+from aiohttp import ClientPayloadError
 from aiohttp import ClientResponse
 from aiohttp import ClientSession
 from aiohttp import ClientTimeout
+from aiohttp import ServerDisconnectedError
 from aiohttp import TCPConnector
 from aiohttp_retry import ExponentialRetry
 from aiohttp_retry import RetryClient
@@ -107,8 +109,8 @@ class WhodatClient:
             )
 
         aio_session = ClientSession(
-            connector=TCPConnector(limit=200, force_close=True),
-            timeout=ClientTimeout(total=60 * 60 * 24),
+            connector=TCPConnector(limit=100, enable_cleanup_closed=True),
+            timeout=ClientTimeout(total=60),
         )
         async with RetryClient(
             client_session=aio_session,
@@ -117,11 +119,15 @@ class WhodatClient:
                 start_timeout=0.1,
                 max_timeout=30,
                 factor=6,
-                statuses={
-                    400,
-                }.union(
+                statuses={400, 429}.union(
                     set(range(500, 600))
                 ),  # Retry all 5xx errors and 400 Bad Request
+                exceptions={
+                    ClientPayloadError,
+                    ServerDisconnectedError,
+                    asyncio.TimeoutError,
+                    OSError,
+                },
             ),
         ) as client:
             results = await asyncio.gather(
