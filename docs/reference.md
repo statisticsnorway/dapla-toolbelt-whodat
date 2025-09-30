@@ -12,14 +12,14 @@ delete the .rst file afterwards.
 -->
 
 ```{eval-rst}
-whodat package
+dapla_whodat package
 =============================================================================
 
 
-whodat.functions module
+dapla_whodat.functions module
 -----------------------------------------------------------------------------
 
-.. automodule:: whodat.functions
+.. automodule:: dapla_whodat.functions
    :members:
    :undoc-members:
    :show-inheritance:
