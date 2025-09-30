@@ -1,12 +1,12 @@
 # Whodat
 
-[![PyPI](https://img.shields.io/pypi/v/whodat.svg)][pypi status]
-[![Status](https://img.shields.io/pypi/status/whodat.svg)][pypi status]
-[![Python Version](https://img.shields.io/pypi/pyversions/whodat)][pypi status]
-[![License](https://img.shields.io/pypi/l/whodat)][license]
+[![PyPI](https://img.shields.io/pypi/v/dapla-toolbelt-whodat.svg)][pypi status]
+[![Status](https://img.shields.io/pypi/status/dapla-toolbelt-whodat.svg)][pypi status]
+[![Python Version](https://img.shields.io/pypi/pyversions/dapla-toolbelt-whodat)][pypi status]
+[![License](https://img.shields.io/pypi/l/dapla-toolbelt-whodat)][license]
 
-[![Documentation](https://github.com/statisticsnorway/whodat/actions/workflows/docs.yml/badge.svg)][documentation]
-[![Tests](https://github.com/statisticsnorway/whodat/actions/workflows/tests.yml/badge.svg)][tests]
+[![Documentation](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/docs.yml/badge.svg)][documentation]
+[![Tests](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/tests.yml/badge.svg)][tests]
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_whodat&metric=coverage)][sonarcov]
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_whodat&metric=alert_status)][sonarquality]
 
@@ -15,9 +15,9 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)][poetry]
 
-[pypi status]: https://pypi.org/project/whodat/
-[documentation]: https://statisticsnorway.github.io/whodat
-[tests]: https://github.com/statisticsnorway/whodat/actions?workflow=Tests
+[pypi status]: https://pypi.org/project/dapla-toolbelt-whodat/
+[documentation]: https://statisticsnorway.github.io/dapla-toolbelt-whodat
+[tests]: https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions?workflow=Tests
 [sonarcov]: https://sonarcloud.io/summary/overall?id=statisticsnorway_whodat
 [sonarquality]: https://sonarcloud.io/summary/overall?id=statisticsnorway_whodat
 [pre-commit]: https://github.com/pre-commit/pre-commit
@@ -37,7 +37,7 @@
 You can install _Whodat_ via [pip] from [PyPI]:
 
 ```console
-pip install whodat
+pip install dapla-toolbelt-whodat
 ```
 
 ## Usage
@@ -66,11 +66,11 @@ This project was generated from [Statistics Norway]'s [SSB PyPI Template].
 [statistics norway]: https://www.ssb.no/en
 [pypi]: https://pypi.org/
 [ssb pypi template]: https://github.com/statisticsnorway/ssb-pypitemplate
-[file an issue]: https://github.com/statisticsnorway/whodat/issues
+[file an issue]: https://github.com/statisticsnorway/dapla-toolbelt-whodat/issues
 [pip]: https://pip.pypa.io/
 
 <!-- github-only -->
 
-[license]: https://github.com/statisticsnorway/whodat/blob/main/LICENSE
-[contributor guide]: https://github.com/statisticsnorway/whodat/blob/main/CONTRIBUTING.md
-[reference guide]: https://statisticsnorway.github.io/whodat/reference.html
+[license]: https://github.com/statisticsnorway/dapla-toolbelt-whodat/blob/main/LICENSE
+[contributor guide]: https://github.com/statisticsnorway/dapla-toolbelt-whodat/blob/main/CONTRIBUTING.md
+[reference guide]: https://statisticsnorway.github.io/dapla-toolbelt-whodat/reference.html

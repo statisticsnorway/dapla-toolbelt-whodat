@@ -5,12 +5,12 @@ from typing import Any
 import pandas as pd
 import polars as pl
 
-from whodat.client.client import _client
-from whodat.model import WhodatModifiers
-from whodat.model import WhodatRequest
-from whodat.model import WhodatVariables
-from whodat.result import Result
-from whodat.utils import running_asyncio_loop
+from .client.client import _client
+from .model import WhodatModifiers
+from .model import WhodatRequest
+from .model import WhodatVariables
+from .result import Result
+from .utils import running_asyncio_loop
 
 
 class Whodat:

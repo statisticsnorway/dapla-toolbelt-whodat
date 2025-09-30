@@ -1,5 +1,5 @@
 [project]
-name = "whodat"
+name = "dapla-toolbelt-whodat"
 version = "0.0.8"
 description = "Whodat"
 authors = [{ name = "Team Statistikktjenester", email = "contact-email@ssb.no" }]
@@ -33,13 +33,13 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/statisticsnorway/whodat"
-repository = "https://github.com/statisticsnorway/whodat"
-documentation = "https://statisticsnorway.github.io/whodat"
-Changelog = "https://github.com/statisticsnorway/whodat/releases"
+homepage = "https://github.com/statisticsnorway/dapla-toolbelt-whodat"
+repository = "https://github.com/statisticsnorway/dapla-toolbelt-whodat"
+documentation = "https://statisticsnorway.github.io/dapla-toolbelt-whodat"
+Changelog = "https://github.com/statisticsnorway/dapla-toolbelt-whodat/releases"
 
 [project.scripts]
-whodat = "whodat.__main__:main"
+dapla_whodat = "dapla_whodat.__main__:main"
 
 [dependency-groups]
 dev = [
@@ -72,7 +72,7 @@ tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["whodat", "tests"]
+source = ["dapla_whodat", "tests"]
 relative_files = true
 
 [tool.coverage.report]
@@ -160,6 +160,10 @@ classmethod-decorators = ["classmethod", "validator", "root_validator", "pydanti
     "D103",
     "S101",    # asserts are encouraged in pytest
 ]
+
+[tool.uv.build-backend]
+module-root = "src"
+module-name = "dapla_whodat"
 
 [build-system]
 requires = ["uv_build>=0.8.0,<0.9"]

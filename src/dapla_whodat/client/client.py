@@ -17,9 +17,9 @@ from aiohttp_retry import RetryClient
 from dapla_auth_client import AuthClient
 from ulid import ULID
 
-from whodat.constants import Env
-from whodat.model import WhodatRequest
-from whodat.model import WhodatResponse
+from dapla_whodat.constants import Env
+from dapla_whodat.model import WhodatRequest
+from dapla_whodat.model import WhodatResponse
 
 
 class WhodatClient:
