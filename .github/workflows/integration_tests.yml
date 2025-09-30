@@ -50,7 +50,7 @@ jobs:
         # SEE: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
         whodat_service_auth_token="$(gcloud auth print-identity-token --impersonate-service-account=$PRIVILEGED_SERVICE_ACCOUNT --audiences=$WHODAT_SERVICE_URL --include-email)"
         echo "::add-mask::$whodat_service_auth_token"
-        echo "WHODAT_SERVICE_AUTH_TOKEN=$WHODAT_SERVICE_AUTH_TOKEN" >> "$GITHUB_OUTPUT"
+        echo "WHODAT_SERVICE_AUTH_TOKEN=$whodat_service_auth_token" >> "$GITHUB_OUTPUT"
 
     - name: Get uv version from constraints
       id: uv-version
