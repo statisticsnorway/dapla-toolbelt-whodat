@@ -27,6 +27,9 @@ jobs:
           - { python: "3.13", os: "ubuntu-latest", session: "tests" }
           - { python: "3.13", os: "windows-latest", session: "tests" }
           - { python: "3.13", os: "macos-latest", session: "tests" }
+    env:
+      NOXSESSION: ${{ matrix.session }}
+      FORCE_COLOR: "1"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -70,4 +73,4 @@ jobs:
       env:
         WHODAT_SERVICE_AUTH_TOKEN: ${{ steps.get-id-token.outputs.WHODAT_SERVICE_AUTH_TOKEN }}
       run: |
-        uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} -- tests/integration
+        uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" "nox --python=${{ matrix.python }} -- tests/integration"

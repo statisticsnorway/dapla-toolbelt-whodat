@@ -18,7 +18,7 @@ def test_whodat() -> None:
         },
     )
 
-    result = (
+    _ = (
         Whodat.from_polars(df)
         .search_fnr()
         .with_search_strategy(variables=["navn"])
