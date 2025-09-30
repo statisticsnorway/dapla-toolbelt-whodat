@@ -4,8 +4,8 @@
   "checkout": "2025.7.18",
   "context": {
     "cookiecutter": {
-      "project_name": "whodat",
-      "package_name": "whodat",
+      "project_name": "dapla-toolbelt-whodat",
+      "package_name": "dapla_whodat",
       "friendly_name": "Whodat",
       "copyright_owner": "Statistics Norway",
       "copyright_year": "2025",

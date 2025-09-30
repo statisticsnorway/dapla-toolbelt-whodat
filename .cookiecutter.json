@@ -19,7 +19,7 @@
   "friendly_name": "Whodat",
   "github_organization": "statisticsnorway",
   "license": "MIT",
-  "package_name": "whodat",
-  "project_name": "whodat",
+  "package_name": "dapla-toolbelt-whodat",
+  "project_name": "dapla_whodat",
   "version": "0.0.0"
 }

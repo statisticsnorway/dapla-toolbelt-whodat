@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from whodat.model import WhodatResponse
+from .model import WhodatResponse
 
 
 class SingleRowInfo(BaseModel):
