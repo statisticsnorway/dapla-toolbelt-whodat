@@ -109,7 +109,7 @@ class WhodatClient:
             )
 
         aio_session = ClientSession(
-            connector=TCPConnector(limit=100, enable_cleanup_closed=True),
+            connector=TCPConnector(limit=50),
             timeout=ClientTimeout(total=60),
         )
         async with RetryClient(
@@ -142,7 +142,8 @@ class WhodatClient:
                     for reqs in whodat_requests
                 ]
             )
-        await asyncio.sleep(0.1)  # Allow time for sockets to close
+            
+        await asyncio.sleep(0.5)  # Allow time for sockets to close
         await aio_session.close()
 
         return results
