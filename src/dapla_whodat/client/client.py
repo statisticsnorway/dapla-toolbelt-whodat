@@ -142,7 +142,7 @@ class WhodatClient:
                     for reqs in whodat_requests
                 ]
             )
-            
+
         await asyncio.sleep(0.5)  # Allow time for sockets to close
         await aio_session.close()
 
