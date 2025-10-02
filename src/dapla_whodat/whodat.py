@@ -87,21 +87,20 @@ class Whodat:
 
                 return {var: row[var] for var in variables}
 
-            requests: list[list[WhodatRequest]] = []
-            for row in self.dataframe.iter_rows(named=True):
-                requests_for_row: list[WhodatRequest] = [
-                    WhodatRequest(
-                        variables=WhodatVariables.model_validate(
-                            index_column_to_dict(variables, row)
-                        ),
-                        modifiers=modifiers,
-                    )
-                    for variables, modifiers in zip(
-                        self.all_variables, self.all_modifiers, strict=True
-                    )
+            requests: list[WhodatRequest] = []
+            for variables, modifiers in zip(
+                self.all_variables, self.all_modifiers, strict=True
+            ):
+                variables_for_row: list[WhodatVariables] = [
+                    WhodatVariables.model_validate(index_column_to_dict(variables, row))
+                    for row in self.dataframe.iter_rows(named=True)
                 ]
-
-                requests.append(requests_for_row)
+                requests.append(
+                    WhodatRequest(
+                        whodat_variables=variables_for_row,
+                        whodat_modifiers=modifiers,
+                    )
+                )
 
             whodat_client = _client()
             if running_asyncio_loop() is not None:
@@ -112,7 +111,7 @@ class Whodat:
                         lambda: asyncio.run(
                             whodat_client.post_to_field_endpoint(
                                 path="search",
-                                timeout=120,
+                                timeout=600,
                                 whodat_requests=requests,
                             )
                         )
@@ -121,7 +120,7 @@ class Whodat:
                 responses = asyncio.run(
                     whodat_client.post_to_field_endpoint(
                         path="search",
-                        timeout=120,
+                        timeout=600,
                         whodat_requests=requests,
                     )
                 )

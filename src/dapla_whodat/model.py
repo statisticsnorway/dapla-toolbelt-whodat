@@ -1,11 +1,6 @@
-from enum import Enum
-from time import strptime
-from typing import Any
-
 from pydantic import BaseModel
 from pydantic import ConfigDict
-from pydantic import field_validator
-from pydantic import model_serializer
+from pydantic.alias_generators import to_camel
 
 
 class WhodatBaseModel(BaseModel):
@@ -14,37 +9,23 @@ class WhodatBaseModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
-class Gender(str, Enum):
-    """Enum representing gender options."""
-
-    MALE = "mann"
-    FEMALE = "kvinne"
-
-
-class DataBasis(str, Enum):
-    """Enum representing data basis options."""
-
-    CURRENT = "gjeldende"
-    HISTORICAL = "historisk"
-
-
 class WhodatRequest(WhodatBaseModel):
     """Request model for Whodat Service."""
 
-    variables: "WhodatVariables"
-    modifiers: "WhodatModifiers"
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True,
+    )
 
-    @model_serializer
-    def _serialize(self) -> dict[str, Any]:
-        return self.variables.model_dump(exclude_none=True) | self.modifiers.model_dump(
-            exclude_none=True
-        )
+    whodat_variables: list["WhodatVariables"]
+    whodat_modifiers: "WhodatModifiers | None" = None
 
 
 class WhodatResponse(BaseModel):
     """Response model from Whodat Service."""
 
-    found_personal_ids: list[str]
+    found_personal_ids: list[list[str]]
 
 
 class WhodatVariables(WhodatBaseModel):
@@ -62,7 +43,7 @@ class WhodatVariables(WhodatBaseModel):
     navn: str | None = None
 
     # 'mann' eller 'kvinne'
-    kjoenn: Gender | None = None
+    kjoenn: str | None = None
 
     # Fødselsdato (YYYYMMDD)
     foedselsdato: str | None = None
@@ -88,73 +69,6 @@ class WhodatVariables(WhodatBaseModel):
     # Filtrerer treff på fylkesnummer (2 siffer)
     fylkesnummer: str | None = None
 
-    @field_validator("foedselsdato", mode="before")
-    @classmethod
-    def _ensure_yyyymmdd_format(cls, value: str | None) -> str | None:
-        if value is None:
-            return None
-
-        if not isinstance(value, str):
-            raise ValueError(
-                "value must be a string in the following format (YYYYMMDD)"
-            )
-
-        try:
-            strptime(value, "%Y%m%d")
-        except ValueError as e:
-            raise ValueError(
-                "value must be a string in the following format (YYYYMMDD)"
-            ) from e
-
-        return value
-
-    @field_validator("foedselsaarFraOgMed", "foedselsaarTilOgMed", mode="before")
-    @classmethod
-    def _ensure_yyyy_format(cls, value: str | None) -> str | None:
-        if value is None:
-            return None
-
-        if not isinstance(value, str):
-            raise ValueError("value must be a string in ISO 8601 format (YYYY-MM-DD)")
-        try:
-            strptime(value, "%Y")
-        except ValueError as e:
-            raise ValueError(
-                "value must be a string in ISO 8601 format (YYYY-MM-DD)"
-            ) from e
-
-        return value
-
-    @field_validator("postnummer", "kommunenummer", mode="before")
-    @classmethod
-    def _ensure_4_digits(cls, value: str | None) -> str | None:
-        if value is None or (len(value) == 4 and value.isdigit()):
-            return value
-
-        raise ValueError("value must be a string with exactly 4 digits")
-
-    @field_validator("fylkesnummer", mode="before")
-    @classmethod
-    def _ensure_2_digits(cls, value: str | None) -> str | None:
-        if value is None or (len(value) == 2 and value.isdigit()):
-            return value
-
-        raise ValueError("value must be a string with exactly 4 digits")
-
-    @field_validator("kjoenn", mode="before")
-    @classmethod
-    def _ensure_correct_gender(cls, value: str | None) -> Gender | None:
-        if value is None:
-            return None
-
-        try:
-            gender = Gender(value)
-        except ValueError as e:
-            raise ValueError(
-                f"Gender was \"{value}\", but it must be either 'mann' or 'kvinne'"
-            ) from e
-        return gender
-
 
 class WhodatModifiers(BaseModel):
     """All search modifiers available in FREG API.
@@ -174,4 +88,4 @@ class WhodatModifiers(BaseModel):
 
     # Styrer håndtering av historikk. En av ('gjeldende', 'historisk'). Default: 'gjeldende'.
     # Påvirker kun navn og adresse - for andre opplysninger søkes det alltid kun på gjeldende.
-    opplysningsgrunnlag: DataBasis | None = None
+    opplysningsgrunnlag: str | None = None

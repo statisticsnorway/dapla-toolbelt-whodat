@@ -1,3 +1,5 @@
+import pprint
+
 import polars as pl
 import pytest
 
@@ -18,7 +20,7 @@ def test_whodat() -> None:
         },
     )
 
-    _ = (
+    r = (
         Whodat.from_polars(df)
         .search_fnr()
         .with_search_strategy(variables=["navn"])
@@ -30,3 +32,24 @@ def test_whodat() -> None:
         )
         .run()
     )
+    pprint.pprint(r.details)
+    assert r.details == [
+        {
+            "index_fnr_search_df": 0,
+            "index_original_df": None,
+            "number_of_found_ids": 1,
+            "unique_response_step_number": 2,
+        },
+        {
+            "index_fnr_search_df": 1,
+            "index_original_df": None,
+            "number_of_found_ids": 1,
+            "unique_response_step_number": 2,
+        },
+        {
+            "index_fnr_search_df": 2,
+            "index_original_df": None,
+            "number_of_found_ids": 1,
+            "unique_response_step_number": 2,
+        },
+    ]
