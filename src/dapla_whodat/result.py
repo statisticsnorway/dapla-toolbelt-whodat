@@ -51,10 +51,9 @@ class Result:
         result: list[str | None] = []
         for r in self.details:
             if r.get("number_of_found_ids") == 1:
-                found_ids = self.responses[r["unique_response_step_number"]][
-                    r["index_fnr_search_df"]
-                ]
-                result.append(found_ids)
+                response = self.responses[r["unique_response_step_number"]]
+                found_ids = response.found_personal_ids[r["index_fnr_search_df"]]
+                result.append(found_ids[0])
             elif not exclude_nones:
                 result.append(None)
 
@@ -75,11 +74,18 @@ class Result:
             raise ValueError(
                 "Original indices are not available in DataFrame. If using Polars, include a column named 'index' representing the original indices."
             )
-        return {
-            self.indices_original_df[i]: res[0].found_personal_ids[0]
-            for i, res in enumerate(self.responses)
-            if len(res[0].found_personal_ids) == 1
-        }
+
+        results = {}
+        for r in self.details:
+            step_number = r["unique_response_step_number"]
+            index_fnr_search = r["index_fnr_search_df"]
+            index_original_df = r["index_original_df"]
+            if r.get("number_of_found_ids") == 1:
+                response = self.responses[step_number]
+                found_ids = response.found_personal_ids[index_fnr_search]
+                results[index_original_df] = found_ids[0]
+
+        return results
 
     def _generate_details(self) -> list[dict[str, Any]]:
         details: dict[int, dict[str, Any]] = {}
