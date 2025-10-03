@@ -83,7 +83,6 @@ class Result:
 
     def _generate_details(self) -> list[dict[str, Any]]:
         details: dict[int, dict[str, Any]] = {}
-        print(self.responses)
         for step_number, r in enumerate(self.responses, start=1):
             for i, found_personal_ids in enumerate(r.found_personal_ids):
                 if (
