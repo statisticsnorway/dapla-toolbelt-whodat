@@ -79,7 +79,6 @@ class WhodatClient:
             request: WhodatRequest,
             correlation_id: str,
         ) -> WhodatResponse:
-            print(request.model_dump(by_alias=True))
             async with client.post(
                 url=f"{self.whodat_service_url}/{path}",
                 headers={
