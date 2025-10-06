@@ -59,8 +59,8 @@ class WhodatClient:
         self,
         path: str,
         timeout: int,
-        whodat_requests: list[list[WhodatRequest]],
-    ) -> list[tuple[WhodatResponse, int]]:
+        whodat_requests: list[WhodatRequest],
+    ) -> list[WhodatResponse]:
         """Post a request to the Pseudo Service field endpoint.
 
         Args:
@@ -76,37 +76,24 @@ class WhodatClient:
             client: RetryClient,
             path: str,
             timeout: int,
-            requests: list[WhodatRequest],
+            request: WhodatRequest,
             correlation_id: str,
-        ) -> tuple[WhodatResponse, int]:
-            for num_request, request in enumerate(requests, start=1):
-                async with client.post(
-                    url=f"{self.whodat_service_url}/{path}",
-                    headers={
-                        "Authorization": f"Bearer {self.__auth_token()}",
-                        "Content-Type": "application/json",
-                        "X-Correlation-Id": correlation_id,
-                    },
-                    json=request.model_dump(),
-                    timeout=timeout,
-                ) as response:
-                    await WhodatClient._handle_response_error(response)
-                    response_json = await response.json()
-                    found_personal_ids = response_json.get("foedselsEllerDNummer", [])
-                    if len(found_personal_ids) == 1:  # Early return if unique ID found
-                        return (
-                            WhodatResponse.model_validate(
-                                {"found_personal_ids": found_personal_ids}
-                            ),
-                            num_request,
-                        )
+        ) -> WhodatResponse:
+            async with client.post(
+                url=f"{self.whodat_service_url}/{path}",
+                headers={
+                    "Authorization": f"Bearer {self.__auth_token()}",
+                    "Content-Type": "application/json",
+                    "X-Correlation-Id": correlation_id,
+                },
+                json=request.model_dump(by_alias=True),
+                timeout=timeout,
+            ) as response:
+                await WhodatClient._handle_response_error(response)
+                response_json = await response.json()
+                responses = [r.get("foedselsEllerDNummer", []) for r in response_json]
 
-            return (
-                WhodatResponse.model_validate(  # Late return if all attempts exhausted
-                    {"found_personal_ids": found_personal_ids}
-                ),
-                num_request,
-            )
+            return WhodatResponse.model_validate({"found_personal_ids": responses})
 
         aio_session = ClientSession(
             connector=TCPConnector(limit=50),
@@ -115,10 +102,10 @@ class WhodatClient:
         async with RetryClient(
             client_session=aio_session,
             retry_options=ExponentialRetry(
-                attempts=5,
+                attempts=1,
                 start_timeout=0.1,
                 max_timeout=30,
-                factor=6,
+                factor=1,
                 statuses={400, 429}.union(
                     set(range(500, 600))
                 ),  # Retry all 5xx errors and 400 Bad Request
@@ -136,7 +123,7 @@ class WhodatClient:
                         client=client,
                         path=path,
                         timeout=timeout,
-                        requests=reqs,
+                        request=reqs,
                         correlation_id=WhodatClient._generate_new_correlation_id(),
                     )
                     for reqs in whodat_requests

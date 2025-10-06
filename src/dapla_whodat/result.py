@@ -26,7 +26,7 @@ class Result:
 
     def __init__(
         self,
-        responses: list[tuple[WhodatResponse, int]],
+        responses: list[WhodatResponse],
         indices: list[int] | None = None,
     ) -> None:
         """Result of a Whodat personal ID search.
@@ -49,12 +49,12 @@ class Result:
             list[str | None]: _description_
         """
         result: list[str | None] = []
-        for response in self.responses:
-            found_ids = response[0].found_personal_ids
-
-            if len(found_ids) == 1:
+        for r in self.details:
+            if r.get("number_of_found_ids") == 1:
+                response = self.responses[r["unique_response_step_number"]]
+                found_ids = response.found_personal_ids[r["index_fnr_search_df"]]
                 result.append(found_ids[0])
-            elif exclude_nones is False:
+            elif not exclude_nones:
                 result.append(None)
 
         return result
@@ -74,40 +74,47 @@ class Result:
             raise ValueError(
                 "Original indices are not available in DataFrame. If using Polars, include a column named 'index' representing the original indices."
             )
-        return {
-            self.indices_original_df[i]: res[0].found_personal_ids[0]
-            for i, res in enumerate(self.responses)
-            if len(res[0].found_personal_ids) == 1
-        }
+
+        results = {}
+        for r in self.details:
+            step_number = r["unique_response_step_number"]
+            index_fnr_search = r["index_fnr_search_df"]
+            index_original_df = r["index_original_df"]
+            if r.get("number_of_found_ids") == 1:
+                response = self.responses[step_number]
+                found_ids = response.found_personal_ids[index_fnr_search]
+                results[index_original_df] = found_ids[0]
+
+        return results
 
     def _generate_details(self) -> list[dict[str, Any]]:
-        details = []
-        for i, response in enumerate(self.responses):
-            found_ids = response[0].found_personal_ids
-            number_of_found_ids = len(found_ids)
-            unique_response_step_number = (
-                response[1] if number_of_found_ids == 1 else None
-            )
+        details: dict[int, dict[str, Any]] = {}
+        for step_number, r in enumerate(self.responses, start=1):
+            for i, found_personal_ids in enumerate(r.found_personal_ids):
+                if (
+                    single_row_info := details.get(i)
+                ) is not None and single_row_info.get("number_of_found_ids") == 1:
+                    continue  # Already have a unique result for this row, skip further processing
 
-            try:
-                index_original_df = (
-                    self.indices_original_df[i]
-                    if self.indices_original_df is not None
-                    else None
-                )
-            except IndexError:
-                index_original_df = None
+                number_of_found_ids = len(found_personal_ids)
 
-            details.append(
-                SingleRowInfo(
+                try:
+                    index_original_df = (
+                        self.indices_original_df[i]
+                        if self.indices_original_df is not None
+                        else None
+                    )
+                except IndexError:
+                    index_original_df = None
+
+                details[i] = SingleRowInfo(
                     index_fnr_search_df=i,
                     index_original_df=index_original_df,
                     number_of_found_ids=number_of_found_ids,
-                    unique_response_step_number=unique_response_step_number,
+                    unique_response_step_number=step_number,
                 ).model_dump()
-            )
 
-        return details
+        return list(details.values())
 
     @property
     def details(self) -> list[dict[str, Any]]:
