@@ -51,7 +51,12 @@ class Result:
         result: list[str | None] = []
         for r in self.details:
             if r.get("number_of_found_ids") == 1:
-                response = self.responses[r["unique_response_step_number"]]
+                step_number = (
+                    (r["unique_response_step_number"] - 1)
+                    if r["unique_response_step_number"] is not None
+                    else (len(self.responses) - 1)
+                )
+                response = self.responses[step_number]
                 found_ids = response.found_personal_ids[r["index_fnr_search_df"]]
                 result.append(found_ids[0])
             elif not exclude_nones:
@@ -77,7 +82,11 @@ class Result:
 
         results = {}
         for r in self.details:
-            step_number = r["unique_response_step_number"]
+            step_number = (
+                (r["unique_response_step_number"] - 1)
+                if r["unique_response_step_number"] is not None
+                else (len(self.responses) - 1)
+            )
             index_fnr_search = r["index_fnr_search_df"]
             index_original_df = r["index_original_df"]
             if r.get("number_of_found_ids") == 1:
@@ -111,7 +120,9 @@ class Result:
                     index_fnr_search_df=i,
                     index_original_df=index_original_df,
                     number_of_found_ids=number_of_found_ids,
-                    unique_response_step_number=step_number,
+                    unique_response_step_number=(
+                        step_number if number_of_found_ids == 1 else None
+                    ),
                 ).model_dump()
 
         return list(details.values())

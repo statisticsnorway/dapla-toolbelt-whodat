@@ -26,6 +26,7 @@ class Whodat:
         Returns:
             Whodat._MethodSelector: Intermediate class for choosing search method.
         """
+        dataframe.index.name = "index"  # Ensure index has a name for later retrieval
         return Whodat._MethodSelector(pl.from_pandas(dataframe, include_index=True))
 
     @staticmethod
@@ -125,10 +126,10 @@ class Whodat:
                     )
                 )
 
-            if "index" in self.dataframe.columns:  # If source was Polars DataFrame
+            print(self.dataframe.columns)
+
+            if "index" in self.dataframe.columns:
                 indices_original_df = self.dataframe.get_column("index").to_list()
-            elif "None" in self.dataframe.columns:  # If source was Pandas DataFrame
-                indices_original_df = self.dataframe.get_column("None").to_list()
             else:
                 indices_original_df = None
 
