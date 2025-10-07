@@ -126,8 +126,6 @@ class Whodat:
                     )
                 )
 
-            print(self.dataframe.columns)
-
             if "index" in self.dataframe.columns:
                 indices_original_df = self.dataframe.get_column("index").to_list()
             else:
