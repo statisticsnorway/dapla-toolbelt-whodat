@@ -169,6 +169,8 @@ def tests(session: Session) -> None:
             "--parallel",
             "-m",
             "pytest",
+            "-n",
+            "auto",
             "-o",
             "pythonpath=",
             *session.posargs,
@@ -195,7 +197,9 @@ def coverage(session: Session) -> None:
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     install_with_uv(session)
-    session.run("pytest", f"--typeguard-packages={package}", *session.posargs)
+    session.run(
+        "pytest", f"--typeguard-packages={package}", "-n", "auto", *session.posargs
+    )
 
 
 @session(python=python_versions)
