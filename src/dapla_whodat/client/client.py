@@ -3,6 +3,7 @@
 import asyncio
 import os
 import typing as t
+import zlib
 
 import google.auth.transport.requests
 import google.oauth2.id_token
@@ -58,14 +59,14 @@ class WhodatClient:
     async def post_to_field_endpoint(
         self,
         path: str,
-        timeout: int,
+        timeout: float,
         whodat_requests: list[WhodatRequest],
     ) -> list[WhodatResponse]:
         """Post a request to the Pseudo Service field endpoint.
 
         Args:
             path (str): Full URL to the endpoint
-            timeout (int): Request timeout
+            timeout (float): Request timeout
             whodat_requests: list[list[WhodatRequest]] Whodat requests, with each inner list representing the requests for a single row.
 
         Returns:
@@ -75,18 +76,21 @@ class WhodatClient:
         async def _post(
             client: RetryClient,
             path: str,
-            timeout: int,
+            timeout: ClientTimeout,
             request: WhodatRequest,
             correlation_id: str,
         ) -> WhodatResponse:
+            data = zlib.compress(request.model_dump_json(by_alias=True).encode("utf-8"))
             async with client.post(
                 url=f"{self.whodat_service_url}/{path}",
                 headers={
                     "Authorization": f"Bearer {self.__auth_token()}",
                     "Content-Type": "application/json",
+                    "Content-Encoding": "deflate",
                     "X-Correlation-Id": correlation_id,
                 },
-                json=request.model_dump(by_alias=True),
+                retry_options=None,
+                data=data,
                 timeout=timeout,
             ) as response:
                 await WhodatClient._handle_response_error(response)
@@ -95,20 +99,35 @@ class WhodatClient:
 
             return WhodatResponse.model_validate({"found_personal_ids": responses})
 
+        total_timeout = ClientTimeout(
+            total=None,
+            connect=3.0,
+            sock_read=timeout,
+            sock_connect=3.0,
+        )
+
+        per_request_timeout = ClientTimeout(
+            total=None,
+            connect=3.0,
+            sock_read=timeout * 0.8,
+            sock_connect=3.0,
+        )
+
         aio_session = ClientSession(
             connector=TCPConnector(limit=50),
-            timeout=ClientTimeout(total=60),
+            timeout=total_timeout,
         )
+
         async with RetryClient(
             client_session=aio_session,
             retry_options=ExponentialRetry(
-                attempts=1,
+                attempts=3,
                 start_timeout=0.1,
                 max_timeout=30,
-                factor=1,
-                statuses={400, 429}.union(
+                factor=3,
+                statuses={429}.union(
                     set(range(500, 600))
-                ),  # Retry all 5xx errors and 400 Bad Request
+                ),  # Retry all 5xx errors and 429 Too Many Requests
                 exceptions={
                     ClientPayloadError,
                     ServerDisconnectedError,
@@ -122,7 +141,7 @@ class WhodatClient:
                     _post(
                         client=client,
                         path=path,
-                        timeout=timeout,
+                        timeout=per_request_timeout,
                         request=reqs,
                         correlation_id=WhodatClient._generate_new_correlation_id(),
                     )

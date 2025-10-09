@@ -10,3 +10,6 @@ class Env(str, Enum):
     def __str__(self) -> str:
         """Use value for string representation."""
         return str(self.value)
+
+
+SOCKET_READ_TIMEOUT: float = 300.0

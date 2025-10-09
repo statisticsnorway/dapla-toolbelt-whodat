@@ -5,6 +5,8 @@ from typing import Any
 import pandas as pd
 import polars as pl
 
+from dapla_whodat.constants import SOCKET_READ_TIMEOUT
+
 from .client.client import _client
 from .model import WhodatModifiers
 from .model import WhodatRequest
@@ -112,7 +114,7 @@ class Whodat:
                         lambda: asyncio.run(
                             whodat_client.post_to_field_endpoint(
                                 path="search",
-                                timeout=600,
+                                timeout=SOCKET_READ_TIMEOUT,
                                 whodat_requests=requests,
                             )
                         )
@@ -121,7 +123,7 @@ class Whodat:
                 responses = asyncio.run(
                     whodat_client.post_to_field_endpoint(
                         path="search",
-                        timeout=600,
+                        timeout=SOCKET_READ_TIMEOUT,
                         whodat_requests=requests,
                     )
                 )
