@@ -109,7 +109,7 @@ class WhodatClient:
         per_request_timeout = ClientTimeout(
             total=None,
             connect=3.0,
-            sock_read=timeout * 0.8,
+            sock_read=timeout * 0.95,
             sock_connect=3.0,
         )
 
