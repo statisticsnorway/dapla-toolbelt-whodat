@@ -89,7 +89,6 @@ class WhodatClient:
                     "Content-Encoding": "deflate",
                     "X-Correlation-Id": correlation_id,
                 },
-                retry_options=None,
                 data=data,
                 timeout=timeout,
             ) as response:
