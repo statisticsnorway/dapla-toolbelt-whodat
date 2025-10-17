@@ -33,7 +33,7 @@ class FregClientError(BaseModel):
         context: Any | None = None,
         by_alias: bool | None = None,
         by_name: bool | None = None,
-    ) -> "FregClientError" | None:
+    ) -> "FregClientError | None":
         """Wrapper method to return None instead of throwing error on validation failure."""
         try:
             return super().model_validate_json(
