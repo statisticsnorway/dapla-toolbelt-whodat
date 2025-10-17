@@ -1,7 +1,6 @@
 import inspect
 import json
 from typing import Any
-from typing import Self
 
 from aiohttp import ClientResponse
 from pydantic import BaseModel
@@ -34,7 +33,7 @@ class FregClientError(BaseModel):
         context: Any | None = None,
         by_alias: bool | None = None,
         by_name: bool | None = None,
-    ) -> Self | None:
+    ) -> "FregClientError" | None:
         """Wrapper method to return None instead of throwing error on validation failure."""
         try:
             return super().model_validate_json(
