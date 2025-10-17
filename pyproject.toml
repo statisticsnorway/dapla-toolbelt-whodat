@@ -1,6 +1,6 @@
 [project]
 name = "dapla-toolbelt-whodat"
-version = "1.1.0"
+version = "1.2.0"
 description = "Whodat"
 authors = [{ name = "Team Statistikktjenester", email = "contact-email@ssb.no" }]
 maintainers = [{ name = "Statistics Norway, Data enablement Department (724)" }]

@@ -8,7 +8,6 @@ import zlib
 import google.auth.transport.requests
 import google.oauth2.id_token
 from aiohttp import ClientPayloadError
-from aiohttp import ClientResponse
 from aiohttp import ClientSession
 from aiohttp import ClientTimeout
 from aiohttp import ServerDisconnectedError
@@ -18,6 +17,7 @@ from aiohttp_retry import RetryClient
 from dapla_auth_client import AuthClient
 from ulid import ULID
 
+from dapla_whodat.client.response_errors import handle_response_error
 from dapla_whodat.constants import Env
 from dapla_whodat.model import WhodatRequest
 from dapla_whodat.model import WhodatResponse
@@ -61,6 +61,7 @@ class WhodatClient:
         path: str,
         timeout: float,
         whodat_requests: list[WhodatRequest],
+        indices_original_df: list[int] | None = None,
     ) -> list[WhodatResponse]:
         """Post a request to the Pseudo Service field endpoint.
 
@@ -68,6 +69,7 @@ class WhodatClient:
             path (str): Full URL to the endpoint
             timeout (float): Request timeout
             whodat_requests: list[list[WhodatRequest]] Whodat requests, with each inner list representing the requests for a single row.
+            indices_original_df: list[int] | None = None: Indices from the original DataFrame, if available.
 
         Returns:
             list[tuple[WhodatResponse, int]]: A list of tuple of (field_name, data, metadata)
@@ -79,6 +81,7 @@ class WhodatClient:
             timeout: ClientTimeout,
             request: WhodatRequest,
             correlation_id: str,
+            indices_original_df: list[int] | None = None,
         ) -> WhodatResponse:
             data = zlib.compress(request.model_dump_json(by_alias=True).encode("utf-8"))
             async with client.post(
@@ -92,7 +95,7 @@ class WhodatClient:
                 data=data,
                 timeout=timeout,
             ) as response:
-                await WhodatClient._handle_response_error(response)
+                await handle_response_error(response, indices_original_df)
                 response_json = await response.json()
                 responses = [r.get("foedselsEllerDNummer", []) for r in response_json]
 
@@ -143,6 +146,7 @@ class WhodatClient:
                         timeout=per_request_timeout,
                         request=reqs,
                         correlation_id=WhodatClient._generate_new_correlation_id(),
+                        indices_original_df=indices_original_df,
                     )
                     for reqs in whodat_requests
                 ]
@@ -152,17 +156,6 @@ class WhodatClient:
         await aio_session.close()
 
         return results
-
-    @staticmethod
-    async def _handle_response_error(response: ClientResponse) -> None:
-        """Report error messages in response object."""
-        match response.status:
-            case status if status in range(200, 300):
-                pass
-            case _:
-                print(response.headers)
-                print(await response.text())
-                response.raise_for_status()
 
     @staticmethod
     def _generate_new_correlation_id() -> str:
