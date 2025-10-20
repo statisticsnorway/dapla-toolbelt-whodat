@@ -51,7 +51,7 @@ class WhodatVariables(WhodatBaseModel):
     # Laveste fødselsår (4 siffer)
     foedselsaarFraOgMed: str | None = None
 
-    # Laveste fødselsår (4 siffer)
+    # Høyeste fødselsår (4 siffer)
     foedselsaarTilOgMed: str | None = None
 
     # Minst 3 tegn fra begynnelsen av gatenavn

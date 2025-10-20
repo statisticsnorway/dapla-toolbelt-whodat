@@ -198,7 +198,6 @@ def test_whodat_original_indices() -> None:
             "kjoenn": pl.String,
         },
     ).with_row_index()
-
     r = (
         Whodat.from_polars(df)
         .search_fnr()
@@ -229,3 +228,66 @@ def test_whodat_original_indices() -> None:
     assert r.to_dict_from_original_indices() == {
         1: "29890798770",
     }
+
+
+@pytest.mark.usefixtures("setup")
+@integration_test()
+def test_whodat_some_nulls() -> None:
+    df = pl.read_json(
+        "tests/data/data_some_nulls.json",
+        schema={
+            "navn": pl.String,
+            "foedselsdato": pl.String,
+            "bostedsadresse": pl.String,
+            "kjoenn": pl.String,
+        },
+    )
+
+    r = (
+        Whodat.from_polars(df)
+        .search_fnr()
+        .with_search_strategy(variables=["navn", "kjoenn"])
+        .run()
+    )
+    assert r.details == [
+        {
+            "index_fnr_search_df": 0,
+            "index_original_df": None,
+            "number_of_found_ids": 0,
+            "unique_response_step_number": None,
+        },
+        {
+            "index_fnr_search_df": 1,
+            "index_original_df": None,
+            "number_of_found_ids": 1,
+            "unique_response_step_number": 1,
+        },
+        {
+            "index_fnr_search_df": 2,
+            "index_original_df": None,
+            "number_of_found_ids": 10000,
+            "unique_response_step_number": None,
+        },
+    ]
+
+
+@pytest.mark.usefixtures("setup")
+@integration_test()
+def test_whodat_freg_api_error() -> None:
+    df = pl.read_json(
+        "tests/data/data_invalid.json",
+        schema={
+            "navn": pl.String,
+            "foedselsdato": pl.String,
+            "bostedsadresse": pl.String,
+            "kjoenn": pl.String,
+        },
+    )
+
+    with pytest.raises(ValueError, match="FREG API returned an error"):
+        (
+            Whodat.from_polars(df)
+            .search_fnr()
+            .with_search_strategy(variables=["navn", "kjoenn"])
+            .run()
+        )

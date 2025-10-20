@@ -105,6 +105,11 @@ class Whodat:
                     )
                 )
 
+            if "index" in self.dataframe.columns:
+                indices_original_df = self.dataframe.get_column("index").to_list()
+            else:
+                indices_original_df = None
+
             whodat_client = _client()
             if running_asyncio_loop() is not None:
                 with ThreadPoolExecutor(
@@ -116,6 +121,7 @@ class Whodat:
                                 path="search",
                                 timeout=SOCKET_READ_TIMEOUT,
                                 whodat_requests=requests,
+                                indices_original_df=indices_original_df,
                             )
                         )
                     ).result()
@@ -125,12 +131,8 @@ class Whodat:
                         path="search",
                         timeout=SOCKET_READ_TIMEOUT,
                         whodat_requests=requests,
+                        indices_original_df=indices_original_df,
                     )
                 )
-
-            if "index" in self.dataframe.columns:
-                indices_original_df = self.dataframe.get_column("index").to_list()
-            else:
-                indices_original_df = None
 
             return Result(responses, indices_original_df)

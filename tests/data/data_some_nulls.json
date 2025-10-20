@@ -1,0 +1,19 @@
+[
+    {
+        "navn": "KLASSISK VITS",
+        "foedselsdato": "18950523",
+        "kjoenn": null
+    },
+    {
+        "navn": "BARMHJERTIG TRAKTOREGG",
+        "foedselsdato": "20070929",
+        "bostedsadresse": null,
+        "kjoenn": "mann"
+    },
+    {
+        "navn": null,
+        "foedselsdato": null,
+        "bostedsadresse": "Smøyatunvegen 10 H0101 5283 FOTLANDSVÅG",
+        "kjoenn": "mann"
+    }
+]
