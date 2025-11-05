@@ -4,11 +4,12 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: "read"
+  id-token: "write"
 
 jobs:
   tests:
