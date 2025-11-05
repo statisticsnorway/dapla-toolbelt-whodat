@@ -74,7 +74,7 @@ tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["dapla_whodat", "tests"]
+source = ["dapla_whodat"]
 relative_files = true
 
 [tool.coverage.report]
