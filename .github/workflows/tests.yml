@@ -4,11 +4,12 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: "read"
+  id-token: "write"
 
 jobs:
   tests:
@@ -100,9 +101,78 @@ jobs:
           name: docs
           path: docs/_build
 
+  integration_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { python: "3.10", os: "ubuntu-latest", session: "tests" }
+          - { python: "3.11", os: "ubuntu-latest", session: "tests" }
+          - { python: "3.12", os: "ubuntu-latest", session: "tests" }
+          - { python: "3.13", os: "ubuntu-latest", session: "tests" }
+          - { python: "3.13", os: "windows-latest", session: "tests" }
+          - { python: "3.13", os: "macos-latest", session: "tests" }
+    env:
+      NOXSESSION: ${{ matrix.session }}
+      FORCE_COLOR: "1"
+      WHODAT_SERVICE_URL: "https://whodat-service.test.ssb.no"
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - id: "auth"
+      name: "Authenticate to Google Cloud"
+      uses: "google-github-actions/auth@v2.1.3"
+      with:
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.INTEGRATION_TEST_SA_EMAIL }}
+        token_format: "access_token"
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        version: '>= 363.0.0'
+    - name: Generate, mask, and output Google ID token as a secret
+      id: get-id-token
+      env:
+        PRIVILEGED_SERVICE_ACCOUNT: ${{ secrets.INTEGRATION_TEST_PRIV_SA_EMAIL }}
+      run: |
+        # REQUIRED TO KEEP GH ACTIONS FOR LOGGING THE ID TOKEN
+        # SEE: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
+        whodat_service_auth_token="$(gcloud auth print-identity-token --impersonate-service-account=$PRIVILEGED_SERVICE_ACCOUNT --audiences=$WHODAT_SERVICE_URL --include-email)"
+        echo "::add-mask::$whodat_service_auth_token"
+        echo "WHODAT_SERVICE_AUTH_TOKEN=$whodat_service_auth_token" >> "$GITHUB_OUTPUT"
+
+    - name: Get uv version from constraints
+      id: uv-version
+      shell: pwsh
+      run: |
+        $UV_VERSION = (Get-Content .github/workflows/constraints.txt | Where-Object { $_ -match '^uv==' } | ForEach-Object { ($_ -split '==')[1] })
+        echo "version=$UV_VERSION" >> $env:GITHUB_OUTPUT
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        version: ${{ steps.uv-version.outputs.version }}
+        python-version: ${{ matrix.python }}
+
+    - name: Run Nox
+      env:
+        WHODAT_SERVICE_AUTH_TOKEN: ${{ steps.get-id-token.outputs.WHODAT_SERVICE_AUTH_TOKEN }}
+      run: |
+        uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} -- tests/integration
+
+    - name: Upload coverage data
+      if: always() && matrix.session == 'tests'
+      uses: "actions/upload-artifact@v4"
+      with:
+        name: coverage-data-integration-${{ matrix.os }}-${{ matrix.python }}
+        path: ".coverage.*"
+        include-hidden-files: true
+
   coverage:
     runs-on: ubuntu-latest
-    needs: tests
+    needs: [tests, integration_tests]
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
