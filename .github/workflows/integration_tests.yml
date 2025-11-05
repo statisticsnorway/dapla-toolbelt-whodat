@@ -74,3 +74,11 @@ jobs:
         WHODAT_SERVICE_AUTH_TOKEN: ${{ steps.get-id-token.outputs.WHODAT_SERVICE_AUTH_TOKEN }}
       run: |
         uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} -- tests/integration
+
+    - name: Upload coverage data
+      if: always() && matrix.session == 'tests'
+      uses: "actions/upload-artifact@v4"
+      with:
+        name: coverage-data-${{ matrix.os }}-${{ matrix.python }}
+        path: ".coverage.*"
+        include-hidden-files: true
