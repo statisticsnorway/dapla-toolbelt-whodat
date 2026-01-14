@@ -19,6 +19,7 @@ nox.options.sessions = (
     "pre-commit",
     "mypy",
     "tests",
+    "unit_tests",
     "typeguard",
     "xdoctest",
     "docs-build",
@@ -156,6 +157,27 @@ def mypy(session: Session) -> None:
     session.run("mypy", *args)
     if not session.posargs:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
+
+
+@session(python=python_versions_for_test)
+def unit_tests(session: Session) -> None:
+    """Run the test suite."""
+    install_with_uv(session)
+    try:
+        session.run(
+            "coverage",
+            "run",
+            "--parallel",
+            "-m",
+            "pytest",
+            "tests/unit",
+            "-o",
+            "pythonpath=",
+            *session.posargs,
+        )
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
 
 
 @session(python=python_versions_for_test)
