@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dapla-toolbelt-whodat
+  title: Dapla Toolbelt Whodat
+  description: |
+    A python client for amending personal identity numbers
+  tags:
+    - python
+  annotations:
+    github.com/project-slug: statisticsnorway/dapla-toolbelt-whodat
+spec:
+  type: library
+  owner: dapla-stat-developers
+  lifecycle: production
+  dependsOn:
+    - "component:whodat-service"
