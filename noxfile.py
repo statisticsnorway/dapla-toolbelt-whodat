@@ -161,7 +161,7 @@ def mypy(session: Session) -> None:
 
 @session(python=python_versions_for_test)
 def unit_tests(session: Session) -> None:
-    """Run the test suite."""
+    """Run only the unit test suite."""
     install_with_uv(session)
     try:
         session.run(
