@@ -67,6 +67,8 @@ class Whodat:
             inkluder_doede: bool | None = None,
             opplysningsgrunnlag: str | None = None,
         ) -> "Whodat._VariableSelector":
+            if len(variables) == 0:
+                raise ValueError("Variable list cannot be empty")
             self.all_variables.append(variables)
             self.all_modifiers.append(
                 WhodatModifiers(
