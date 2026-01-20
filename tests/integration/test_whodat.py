@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pandas as pd
 import polars as pl
 import pytest
@@ -10,19 +8,10 @@ from tests.integration.utils import integration_test
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_default() -> None:
-    df = pl.read_json(
-        "tests/data/data.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    )
+def test_whodat_default(df_personer_pl: pl.DataFrame) -> None:
 
     r = (
-        Whodat.from_polars(df)
+        Whodat.from_polars(df_personer_pl)
         .search_fnr()
         .with_search_strategy(variables=["navn"])
         .with_search_strategy(
@@ -59,19 +48,10 @@ def test_whodat_default() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_some_missing() -> None:
-    df = pl.read_json(
-        "tests/data/data.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    )
+def test_whodat_some_missing(df_personer_pl: pl.DataFrame) -> None:
 
     r = (
-        Whodat.from_polars(df)
+        Whodat.from_polars(df_personer_pl)
         .search_fnr()
         .with_search_strategy(variables=["navn"])
         .with_search_strategy(variables=["navn", "kjoenn"])
@@ -102,19 +82,10 @@ def test_whodat_some_missing() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_with_indices_polars() -> None:
-    df = pl.read_json(
-        "tests/data/data.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    ).with_row_index()
+def test_whodat_with_indices_polars(df_personer_pl: pl.DataFrame) -> None:
 
     r = (
-        Whodat.from_polars(df)
+        Whodat.from_polars(df_personer_pl.with_row_index())
         .search_fnr()
         .with_search_strategy(variables=["navn"])
         .with_search_strategy(variables=["navn", "kjoenn"])
@@ -145,19 +116,10 @@ def test_whodat_with_indices_polars() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_with_indices_pandas() -> None:
-    df = pd.read_json(
-        path_or_buf=Path("tests/data/data.json"),
-        dtype={
-            "navn": str,
-            "foedselsdato": str,
-            "bostedsadresse": str,
-            "kjoenn": str,
-        },
-    )
+def test_whodat_with_indices_pandas(df_personer_pd: pd.DataFrame) -> None:
 
     r = (
-        Whodat.from_pandas(df)
+        Whodat.from_pandas(df_personer_pd)
         .search_fnr()
         .with_search_strategy(variables=["navn"])
         .with_search_strategy(variables=["navn", "kjoenn"])
@@ -188,18 +150,10 @@ def test_whodat_with_indices_pandas() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_original_indices() -> None:
-    df = pl.read_json(
-        "tests/data/data.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    ).with_row_index()
+def test_whodat_original_indices(df_personer_pl: pl.DataFrame) -> None:
+
     r = (
-        Whodat.from_polars(df)
+        Whodat.from_polars(df_personer_pl.with_row_index())
         .search_fnr()
         .with_search_strategy(variables=["navn"])
         .with_search_strategy(variables=["navn", "kjoenn"])
@@ -232,19 +186,10 @@ def test_whodat_original_indices() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_some_nulls() -> None:
-    df = pl.read_json(
-        "tests/data/data_some_nulls.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    )
+def test_whodat_some_nulls(df_personer_some_nulls: pl.DataFrame) -> None:
 
     r = (
-        Whodat.from_polars(df)
+        Whodat.from_polars(df_personer_some_nulls)
         .search_fnr()
         .with_search_strategy(variables=["navn", "kjoenn"])
         .run()
@@ -273,20 +218,11 @@ def test_whodat_some_nulls() -> None:
 
 @pytest.mark.usefixtures("setup")
 @integration_test()
-def test_whodat_freg_api_error() -> None:
-    df = pl.read_json(
-        "tests/data/data_invalid.json",
-        schema={
-            "navn": pl.String,
-            "foedselsdato": pl.String,
-            "bostedsadresse": pl.String,
-            "kjoenn": pl.String,
-        },
-    )
+def test_whodat_freg_api_error(df_personer_invalid: pl.DataFrame) -> None:
 
     with pytest.raises(ValueError, match="FREG API returned an error"):
         (
-            Whodat.from_polars(df)
+            Whodat.from_polars(df_personer_invalid)
             .search_fnr()
             .with_search_strategy(variables=["navn", "kjoenn"])
             .run()
