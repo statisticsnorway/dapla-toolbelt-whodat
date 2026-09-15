@@ -10,7 +10,6 @@ from textwrap import dedent
 import nox
 from nox import Session
 
-
 package = "dapla_whodat"
 python_versions = ["3.12", "3.13", "3.14"]
 python_versions_for_test = python_versions
