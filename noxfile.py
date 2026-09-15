@@ -12,10 +12,10 @@ from nox import Session
 
 
 package = "dapla_whodat"
-python_versions = ["3.11", "3.12", "3.13"]
-python_versions_for_test = python_versions + ["3.10"]
+python_versions = ["3.12", "3.13", "3.14"]
+python_versions_for_test = python_versions
 nox.needs_version = ">= 2021.6.6"
-nox.options.sessions = (
+nox.options.sessions = [
     "pre-commit",
     "mypy",
     "tests",
@@ -23,7 +23,7 @@ nox.options.sessions = (
     "typeguard",
     "xdoctest",
     "docs-build",
-)
+]
 nox.options.default_venv_backend = "uv"
 session = nox.session
 
@@ -184,6 +184,7 @@ def unit_tests(session: Session) -> None:
 def tests(session: Session) -> None:
     """Run the test suite."""
     install_with_uv(session)
+    env = None if session.posargs else {"INTEGRATION_TESTS": "FALSE"}
     try:
         session.run(
             "coverage",
@@ -194,6 +195,7 @@ def tests(session: Session) -> None:
             "-o",
             "pythonpath=",
             *session.posargs,
+            env=env,
         )
     finally:
         if session.interactive:
@@ -218,7 +220,11 @@ def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     install_with_uv(session)
     session.run(
-        "pytest", f"--typeguard-packages={package}", "-n", "auto", *session.posargs
+        "pytest",
+        f"--typeguard-packages={package}",
+        "-n",
+        "auto",
+        *(session.posargs or ["tests/unit"]),
     )
 
 
