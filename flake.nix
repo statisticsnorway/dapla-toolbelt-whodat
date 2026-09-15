@@ -15,11 +15,13 @@
       default = pkgs.mkShell {
         name = "dapla-toolbelt-whodat devel";
         packages = with pkgs; [
+          actionlint
           pre-commit
           pipx
           python313Packages.ruff
           uv
           xz
+          yaml-language-server
           zlib
           stdenv.cc.cc.lib
         ];
