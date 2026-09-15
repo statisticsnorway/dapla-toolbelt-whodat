@@ -7,8 +7,8 @@
 
 [![Documentation](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/docs.yml/badge.svg)][documentation]
 [![Tests](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/tests.yml/badge.svg)][tests]
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_whodat&metric=coverage)][sonarcov]
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_whodat&metric=alert_status)][sonarquality]
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-toolbelt-whodat&metric=coverage)][sonarcov]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-toolbelt-whodat&metric=alert_status)][sonarquality]
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]
