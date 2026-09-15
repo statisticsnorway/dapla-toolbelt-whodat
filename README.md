@@ -1,4 +1,4 @@
-# Whodat
+# Dapla Toolbelt Whodat
 
 [![PyPI](https://img.shields.io/pypi/v/dapla-toolbelt-whodat.svg)][pypi status]
 [![Status](https://img.shields.io/pypi/status/dapla-toolbelt-whodat.svg)][pypi status]
