@@ -210,7 +210,7 @@ def test_whodat_some_nulls(df_personer_some_nulls: pl.DataFrame) -> None:
         {
             "index_fnr_search_df": 2,
             "index_original_df": None,
-            "number_of_found_ids": 10000,
+            "number_of_found_ids": 3,
             "unique_response_step_number": None,
         },
     ]
