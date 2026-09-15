@@ -46,6 +46,26 @@ pip install dapla-toolbelt-whodat
 
 ## Usage
 
+```python
+import polars as pl
+
+from dapla_whodat import Whodat
+
+df = pl.DataFrame(
+    {
+        "navn": ["Donald Duck", "Dolly Duck", "Onkel Skrue"],
+        "adressenavn": ["Lundlia", "Smøyatunvegen", "Simmenesvegen"],
+    }
+)
+
+result = (
+    Whodat.from_polars(df)
+    .search_fnr()
+    .with_search_strategy(["navn"])
+    .run()
+)
+```
+
 Please see the [Reference Guide] for details.
 
 ## Contributing
