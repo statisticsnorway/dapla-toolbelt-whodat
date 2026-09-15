@@ -77,13 +77,11 @@ async def handle_response_error(
             else:
                 row_message = "No 'index' column was found in the DataFrame, row index for the error cannot be found."
 
-            message = inspect.cleandoc(
-                f"""
+            message = inspect.cleandoc(f"""
             FREG API returned an error.
             Message from FREG API: \"{message_freg}\"
             {row_message}
-            """
-            )
+            """)
 
             raise ValueError(message)
 
