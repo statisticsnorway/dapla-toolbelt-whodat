@@ -532,20 +532,19 @@ toml = [
 
 [[package]]
 name = "dapla-auth-client"
-version = "1.1.0"
+version = "1.2.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
     { name = "google-auth" },
-    { name = "pytest" },
     { name = "requests" },
     { name = "responses" },
     { name = "types-deprecated" },
     { name = "types-requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/3c/7d2d264495eb04589e0abc1742209d8a921a1f5016674ff8cb5fd0e0014f/dapla_auth_client-1.1.0.tar.gz", hash = "sha256:8dcb7b3dd3e2d4869900b9410f8433464abc727eb7525aa5748c43b6bfb4255e", size = 8286, upload-time = "2025-06-25T08:54:54.91Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/c3/a79e67d30e61295739c89072539f3484c0845c6a9d1a624096e246992ea9/dapla_auth_client-1.2.5.tar.gz", hash = "sha256:cb79aa616c2780efa80e2993d78420300cb224bfb87e18d0b2b37c48cfa5d8ed", size = 9151, upload-time = "2026-01-19T09:44:49.82Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/2e/352eb27a0dfc71f8b48916e3491db4efd6f440ebf155eebaa521fc4e8573/dapla_auth_client-1.1.0-py3-none-any.whl", hash = "sha256:ef36d6fdf52a9e7f259cbe39864ca8ac8a1c04264847ccae79a6cc08bd90bc65", size = 8572, upload-time = "2025-06-25T08:54:53.81Z" },
+    { url = "https://files.pythonhosted.org/packages/48/34/5de4f259c1f83911751803f3735447f70afa23dab58d9bbf17779d3479e7/dapla_auth_client-1.2.5-py3-none-any.whl", hash = "sha256:c2c07a6bfe1a349f3b69c7bb6ed3f7e471030c126ff7a38fdef7dc64516ffa79", size = 8409, upload-time = "2026-01-19T09:44:48.273Z" },
 ]
 
 [[package]]
@@ -605,7 +604,7 @@ requires-dist = [
     { name = "polars", specifier = "<=2.0.0" },
     { name = "pyarrow", specifier = ">=21.0.0" },
     { name = "pydantic", specifier = ">=2.11.7" },
-    { name = "pytest", specifier = ">=8.4.1,<9" },
+    { name = "pytest", specifier = ">=8.4.1,<10" },
     { name = "pytest-cases", specifier = ">=3.9.1" },
     { name = "pytest-xdist", extras = ["psutil"], specifier = ">=3.8.0" },
     { name = "python-ulid", specifier = ">=3.1.0" },
@@ -2015,7 +2014,7 @@ wheels = [
 
 [[package]]
 name = "pytest"
-version = "8.4.2"
+version = "9.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -2026,9 +2025,9 @@ dependencies = [
     { name = "pygments" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/0d/549bd94f1a0a402dc8cf64563a117c0f3765662e2e668477624baeec44d5/pytest-9.0.3.tar.gz", hash = "sha256:b86ada508af81d19edeb213c681b1d48246c1a91d304c6c81a427674c17eb91c", size = 1572165, upload-time = "2026-04-07T17:16:18.027Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl", hash = "sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79", size = 365750, upload-time = "2025-09-04T14:34:20.226Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/24/a372aaf5c9b7208e7112038812994107bc65a84cd00e0354a88c2c77a617/pytest-9.0.3-py3-none-any.whl", hash = "sha256:2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9", size = 375249, upload-time = "2026-04-07T17:16:16.13Z" },
 ]
 
 [[package]]
