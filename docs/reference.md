@@ -16,10 +16,10 @@ dapla_whodat package
 =============================================================================
 
 
-dapla_whodat.functions module
+dapla_whodat.whodat module
 -----------------------------------------------------------------------------
 
-.. automodule:: dapla_whodat.functions
+.. automodule:: dapla_whodat.whodat
    :members:
    :undoc-members:
    :show-inheritance:
