@@ -26,11 +26,15 @@
 
 ## Features
 
-- TODO
+- Search for Norwegian national identity numbers from Pandas or Polars DataFrames.
+- Chain search strategies from broad to precise and keep the first unique match for each row.
+- Configure FREG search modifiers such as phonetic matching, historical data, and inclusion of deceased persons or residential addresses.
+- Return matches as a list, a mapping keyed by the original DataFrame index, or detailed per-row results.
 
 ## Requirements
 
-- TODO
+- Python 3.10 or newer.
+- Access to the Whodat service and a Dapla authentication token.
 
 ## Installation
 
