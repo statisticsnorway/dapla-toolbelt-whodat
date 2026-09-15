@@ -21,6 +21,7 @@
           python313Packages.ruff
           uv
           xz
+          yaml-language-server
           zlib
           stdenv.cc.cc.lib
         ];
