@@ -151,4 +151,3 @@ jobs:
         WHODAT_SERVICE_AUTH_TOKEN: ${{ steps.get-id-token.outputs.WHODAT_SERVICE_AUTH_TOKEN }}
       run: |
         uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} -- tests/integration
-
