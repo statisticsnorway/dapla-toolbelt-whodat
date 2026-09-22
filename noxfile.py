@@ -162,21 +162,13 @@ def mypy(session: Session) -> None:
 def unit_tests(session: Session) -> None:
     """Run only the unit test suite."""
     install_with_uv(session)
-    try:
-        session.run(
-            "coverage",
-            "run",
-            "--parallel",
-            "-m",
-            "pytest",
-            "tests/unit",
-            "-o",
-            "pythonpath=",
-            *session.posargs,
-        )
-    finally:
-        if session.interactive:
-            session.notify("coverage", posargs=[])
+    session.run(
+        "pytest",
+        "tests/unit",
+        "-o",
+        "pythonpath=",
+        *session.posargs,
+    )
 
 
 @session(python=python_versions_for_test)
@@ -184,34 +176,13 @@ def tests(session: Session) -> None:
     """Run the test suite."""
     install_with_uv(session)
     env = None if session.posargs else {"INTEGRATION_TESTS": "FALSE"}
-    try:
-        session.run(
-            "coverage",
-            "run",
-            "--parallel",
-            "-m",
-            "pytest",
-            "-o",
-            "pythonpath=",
-            *session.posargs,
-            env=env,
-        )
-    finally:
-        if session.interactive:
-            session.notify("coverage", posargs=[])
-
-
-@session(python=python_versions[0])
-def coverage(session: Session) -> None:
-    """Produce the coverage report."""
-    args = session.posargs or ["report", "--skip-empty"]
-
-    install_with_uv(session)
-
-    if not session.posargs and any(Path().glob(".coverage.*")):
-        session.run("coverage", "combine")
-
-    session.run("coverage", *args)
+    session.run(
+        "pytest",
+        "-o",
+        "pythonpath=",
+        *session.posargs,
+        env=env,
+    )
 
 
 @session(python=python_versions[0])
