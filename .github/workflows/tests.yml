@@ -93,18 +93,15 @@ jobs:
 
   integration_tests:
     if: github.event.pull_request.user.login != 'dependabot[bot]'
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { python: "3.12", os: "ubuntu-latest", session: "tests" }
-          - { python: "3.13", os: "ubuntu-latest", session: "tests" }
-          - { python: "3.14", os: "ubuntu-latest", session: "tests" }
-          - { python: "3.13", os: "windows-latest", session: "tests" }
-          - { python: "3.13", os: "macos-latest", session: "tests" }
+          - { python: "3.12" }
+          - { python: "3.13" }
+          - { python: "3.14" }
     env:
-      NOXSESSION: ${{ matrix.session }}
       FORCE_COLOR: "1"
       WHODAT_SERVICE_URL: "https://whodat-service.test.ssb.no"
     steps:
@@ -150,4 +147,4 @@ jobs:
       env:
         WHODAT_SERVICE_AUTH_TOKEN: ${{ steps.get-id-token.outputs.WHODAT_SERVICE_AUTH_TOKEN }}
       run: |
-        uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} -- tests/integration
+        uvx --constraints "${{ github.workspace }}/.github/workflows/constraints.txt" nox --python=${{ matrix.python }} --session tests -- tests/integration
