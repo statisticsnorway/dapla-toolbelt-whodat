@@ -47,7 +47,6 @@ dapla_whodat = "dapla_whodat.__main__:main"
 dev = [
     "pygments>=2.10.0",
     "black[jupyter]>=23.1.0",
-    "coverage[toml]>=6.2",
     "darglint>=1.8.1",
     "furo>=2021.11.12",
     "mypy>=0.930",
@@ -67,19 +66,6 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-
-[tool.coverage.paths]
-source = ["src", "*/site-packages"]
-tests = ["tests", "*/tests"]
-
-[tool.coverage.run]
-branch = true
-source = ["dapla_whodat", "tests"]
-relative_files = true
-
-[tool.coverage.report]
-show_missing = true
-fail_under = 50
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["nox"]  # packages available by default
