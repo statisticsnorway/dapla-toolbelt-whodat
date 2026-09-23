@@ -178,6 +178,8 @@ def tests(session: Session) -> None:
     env = None if session.posargs else {"INTEGRATION_TESTS": "FALSE"}
     session.run(
         "pytest",
+        "-n",
+        "auto",
         "-o",
         "pythonpath=",
         *session.posargs,
