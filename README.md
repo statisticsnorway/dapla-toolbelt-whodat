@@ -7,8 +7,6 @@
 
 [![Documentation](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/docs.yml/badge.svg)][documentation]
 [![Tests](https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions/workflows/tests.yml/badge.svg)][tests]
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-toolbelt-whodat&metric=coverage)][sonarcov]
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-toolbelt-whodat&metric=alert_status)][sonarquality]
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]
@@ -18,8 +16,6 @@
 [pypi status]: https://pypi.org/project/dapla-toolbelt-whodat/
 [documentation]: https://statisticsnorway.github.io/dapla-toolbelt-whodat
 [tests]: https://github.com/statisticsnorway/dapla-toolbelt-whodat/actions?workflow=Tests
-[sonarcov]: https://sonarcloud.io/summary/overall?id=statisticsnorway_whodat
-[sonarquality]: https://sonarcloud.io/summary/overall?id=statisticsnorway_whodat
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 [uv]: https://github.com/astral-sh/uv
