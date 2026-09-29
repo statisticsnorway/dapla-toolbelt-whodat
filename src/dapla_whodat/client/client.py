@@ -43,7 +43,7 @@ class WhodatClient:
     def __auth_token(self) -> str:
         if os.environ.get("DAPLA_REGION") == "CLOUD_RUN":
             audience = os.environ["WHODAT_SERVICE_URL"]
-            auth_req = google.auth.transport.requests.Request()  # type: ignore[no-untyped-call]
+            auth_req = google.auth.transport.requests.Request()
             token = t.cast(
                 str,
                 google.oauth2.id_token.fetch_id_token(auth_req, audience),  # type: ignore[no-untyped-call]

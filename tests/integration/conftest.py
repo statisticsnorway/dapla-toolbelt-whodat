@@ -2,10 +2,10 @@ import os
 import subprocess
 from collections.abc import Generator
 
-import pytest_cases
+import pytest
 
 
-@pytest_cases.fixture()
+@pytest.fixture()
 def setup() -> Generator[None, None, None]:
     os.environ["WHODAT_SERVICE_URL"] = "https://whodat-service.test.ssb.no"
     # os.environ["WHODAT_SERVICE_URL"] = (

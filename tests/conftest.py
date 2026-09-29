@@ -1,9 +1,9 @@
 import pandas as pd
 import polars as pl
-import pytest_cases
+import pytest
 
 
-@pytest_cases.fixture()
+@pytest.fixture()
 def df_personer_pl() -> pl.DataFrame:
     JSON_FILE = "tests/data/data.json"
     return pl.read_json(
@@ -17,7 +17,7 @@ def df_personer_pl() -> pl.DataFrame:
     )
 
 
-@pytest_cases.fixture()
+@pytest.fixture()
 def df_personer_pd() -> pd.DataFrame:
     JSON_FILE = "tests/data/data.json"
     return pd.read_json(
@@ -31,7 +31,7 @@ def df_personer_pd() -> pd.DataFrame:
     )
 
 
-@pytest_cases.fixture()
+@pytest.fixture()
 def df_personer_some_nulls() -> pl.DataFrame:
     JSON_FILE = "tests/data/data_some_nulls.json"
     return pl.read_json(
@@ -45,7 +45,7 @@ def df_personer_some_nulls() -> pl.DataFrame:
     )
 
 
-@pytest_cases.fixture()
+@pytest.fixture()
 def df_personer_invalid() -> pl.DataFrame:
     JSON_FILE = "tests/data/data_invalid.json"
     return pl.read_json(

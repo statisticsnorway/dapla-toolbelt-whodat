@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Env(str, Enum):
+class Env(StrEnum):
     """Environment variable keys."""
 
     WHODAT_SERVICE_URL = "WHODAT_SERVICE_URL"
